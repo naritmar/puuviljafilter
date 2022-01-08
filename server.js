@@ -4,6 +4,13 @@ const http = require('http');   // require abil saab koodi lisada ka enda teisi 
 // Olek (state) või andmebaas
 let fruits = ["apple","pear","banana","bamboo","ananass","arbuus"]
 
+
+function addFruit(name){
+    fruits.push(name)
+}
+function deleteFruit(name){
+    fruits.splice(fruits.indexOf(name),1)
+}
 /**
  * See funktsioon käivitub iga kord kui keegi kodulehte külastab
  * @param {*} req Request sees on kirjeldatud kasutaja soove
@@ -13,6 +20,12 @@ function requestListener(req, res) {
     console.log(req.url) // Prindib käsurea aknasse mis aadressi kasutaja brauseris avas
     let otsingusõna = ""
     let filterResults
+
+    if(req.url.includes("lisa"))
+        addFruit(req.url.split("=")[1])
+    
+    if(req.url.includes("kustuta"))
+        deleteFruit(req.url.split("=")[1])
 
     // Kui meil on aadressi peal otsing siis proovime otsingusõna aadressist eraldada
     if (req.url.includes("otsi"))
@@ -29,7 +42,10 @@ function requestListener(req, res) {
     // Paneme kokku HTML vastuse
     let html = "<html><head><title>Test</title></head><body>"
     html += "<form><input name='otsi' /><button>Filtreeri</button></form>"
+    html += "<form><input name='lisa' /><button>Lisa</button></form>"
+    html += "<form><input name='kustuta' /><button>Kustuta</button></form>"
     filterResults.forEach(fruit => html += fruit+"<br>")
+
     /*
     for (let i=0; i<fruits.length; i++) {
         let fruit = fruits[i]
